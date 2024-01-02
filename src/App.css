@@ -1,0 +1,10 @@
+.chat_bot {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  max-width: 300px;
+  border: solid 1px #8244e4;
+  border-radius: 8px;
+  max-height: max-content;
+  background-color: #e9dcff;
+}
