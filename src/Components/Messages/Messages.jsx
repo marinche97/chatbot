@@ -12,6 +12,21 @@ class Messages extends React.Component {
 
   username = "Marina Martinović";
 
+  generateBotReply = () => {
+    const botResponse = Math.random() < 0.5 ? "Da" : "Ne";
+    const newBotMessage = {
+      text: botResponse,
+      avatar:
+        "https://images.squarespace-cdn.com/content/v1/5b9d4d4a5cfd7967a7b39d4f/1561271571874-57LZSK8UWZR2ZNEX5JCA/chatbot+avatar+Cute_V2.png?format=1500w",
+      username: "Bot",
+      fromMe: false,
+    };
+
+    this.setState((prevState) => ({
+      messages: [...prevState.messages, newBotMessage],
+    }));
+  };
+
   addMessage = () => {
     const { messages, message } = this.state;
 
@@ -23,35 +38,38 @@ class Messages extends React.Component {
       fromMe: true,
     };
 
-    // Ako nema postojećih poruka, postavi novu poruku kao prvu
-    if (messages.length === 0) {
-      this.setState({
-        messages: [newMessage],
-      });
-    } else {
-      // Inače dodaj novu poruku na kraj postojećih poruka
-      this.setState({
+    // Dodaj novu poruku na kraj postojećih poruka
+    this.setState(
+      {
         messages: [...messages, newMessage],
-      });
-    }
-
-    // Resetiraj stanje poruke na prazan string
-    this.setState({ message: "" });
+        // Resetiraj stanje poruke na prazan string
+        message: "",
+      },
+      () => {
+        // Pozovi funkciju za generiranje odgovora chatbota nakon dodavanja korisničke poruke
+        this.generateBotReply();
+      }
+    );
   };
 
   render() {
     const { messages } = this.state;
 
     return (
-      <div>
+      <div className="obrni">
         <div className="inp_btn">
           <input
-            placeholder="Upiši svoju poruku"
+            className="input"
+            placeholder="Postavi pitanje"
             type="text"
             value={this.state.message}
             onChange={(e) => this.setState({ message: e.target.value })}
           />
-          <button disabled={!this.state.message} onClick={this.addMessage}>
+          <button
+            className="btn"
+            disabled={!this.state.message}
+            onClick={this.addMessage}
+          >
             Pošalji
           </button>
         </div>
@@ -63,21 +81,31 @@ class Messages extends React.Component {
               <div
                 key={index}
                 className={`c-messages__item ${
-                  message.fromMe ? "from-me" : ""
+                  message.fromMe ? "from-me" : "from-bot"
                 }`}
               >
                 <img
-                  height={36}
-                  width={36}
                   src={message.avatar}
                   alt={`Avatar of ${message.username}`}
-                  className="c-messages__item__avatar"
+                  className={`c-messages__item__avatar ${
+                    message.fromMe ? "myavatar" : "botavatar"
+                  }`}
                 />
+
                 <div className="c-messages__item__content">
-                  <span className="c-messages__item__text">
+                  <span
+                    className={`c-messages__item__text ${
+                      message.fromMe ? "mytext" : "bottext"
+                    }`}
+                  >
                     {message.username}
                   </span>
-                  <span className="c-messages__item__bubble">
+
+                  <span
+                    className={`c-messages__item__bubble ${
+                      message.fromMe ? "user-bubble" : "bot-bubble"
+                    }`}
+                  >
                     {message.text}
                   </span>
                 </div>
